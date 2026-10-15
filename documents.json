@@ -11,11 +11,11 @@
       },
       {
         "title": "Approved decision definition",
-        "sql": "select v.version,v.definition,v.approver,v.approved_at from rule_versions v join rules r on r.active_version_id=v.id where r.id=$1"
+        "sql": "select v.version, v.definition->>'strategy' as matching_order, row_number() over() as row,\n coalesce((select string_agg((c->>'field') || ' ' || (case c->>'op' when 'eq' then 'equals' when 'ne' then 'does not equal' when 'gte' then 'at least' when 'gt' then 'greater than' when 'lt' then 'less than' when 'lte' then 'at most' else c->>'op' end) || ' ' || (c->>'value'),' AND ') from jsonb_array_elements(line->'conditions') c),'Always') as when,\n (select string_agg(key || ': ' || value,', ') from jsonb_each_text(line->'output')) as result,\n v.approver as reviewed_by\n from rule_versions v join rules r on r.active_version_id=v.id cross join lateral jsonb_array_elements(v.definition->'rows') line where r.id=$1"
       },
       {
         "title": "Regression examples",
-        "sql": "select name,input,expected from test_cases where rule_id=$1 order by name"
+        "sql": "select name,(select string_agg(key || ': ' || value,', ') from jsonb_each_text(input)) as example,\n case when jsonb_array_length(expected)=0 then 'No matching result' else (select string_agg(kv.key || ': ' || kv.value,'; ') from jsonb_array_elements(expected) e cross join lateral jsonb_each_text(e) kv) end as expected_result\n from test_cases where rule_id=$1 order by name"
       }
     ]
   },
