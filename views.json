@@ -1,13 +1,35 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Business Rules for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Rule review desk",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Reviews due",
+        "sql": "select * from reviews_due"
+      },
+      {
+        "title": "Open exceptions",
+        "sql": "select rule,summary,owner,due,days_overdue from exception_queue order by due"
+      }
+    ]
+  },
+  {
+    "name": "decisions",
+    "title": "Decision outcomes",
+    "sections": [
+      {
+        "title": "Outcomes by version",
+        "sql": "select * from decision_summary order by name,version"
+      }
+    ]
+  },
+  {
+    "name": "coverage",
+    "title": "Rule ownership and coverage",
+    "sections": [
+      {
+        "title": "Register",
+        "sql": "select name,owner,purpose,active_version,test_cases,open_exceptions from rule_register order by name"
       }
     ]
   }

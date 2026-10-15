@@ -1,0 +1,82 @@
+{
+  "name": "Imported dispatch",
+  "description": "Fictional example following the documented DecisionRules export structure",
+  "ruleId": "demo-dispatch-export",
+  "version": 1,
+  "type": "decision-table",
+  "status": "published",
+  "inputSchema": {
+    "region": {}
+  },
+  "outputSchema": {
+    "queue": {}
+  },
+  "decisionTable": {
+    "columns": [
+      {
+        "columnId": "region-column",
+        "type": "input",
+        "condition": {
+          "type": "simple",
+          "inputVariable": "region",
+          "name": "Region"
+        }
+      },
+      {
+        "columnId": "queue-column",
+        "type": "output",
+        "columnOutput": {
+          "type": "simple",
+          "outputVariable": "queue",
+          "name": "Queue"
+        }
+      }
+    ],
+    "rows": [
+      {
+        "active": true,
+        "cells": [
+          {
+            "column": "region-column",
+            "type": "input",
+            "scalarCondition": {
+              "operator": "=",
+              "value": "NZ",
+              "type": "general"
+            }
+          },
+          {
+            "column": "queue-column",
+            "type": "output",
+            "outputScalarValue": {
+              "type": "common",
+              "value": "Auckland dispatch"
+            }
+          }
+        ]
+      },
+      {
+        "active": true,
+        "cells": [
+          {
+            "column": "region-column",
+            "type": "input",
+            "scalarCondition": {
+              "operator": "=",
+              "value": "AU",
+              "type": "general"
+            }
+          },
+          {
+            "column": "queue-column",
+            "type": "output",
+            "outputScalarValue": {
+              "type": "common",
+              "value": "Sydney dispatch"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

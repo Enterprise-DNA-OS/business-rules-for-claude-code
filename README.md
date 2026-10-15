@@ -1,12 +1,6 @@
-<h1 align="center">Business Rules for Claude Code</h1>
+# Business Rules for Claude Code
 
-<p align="center">
-  <strong>The open-source business rules system that is just a database and Claude Code.</strong>
-</p>
-
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+Your order routes, service priorities, rule changes and decision evidence in a database you own. Free, MIT licensed.
 
 <!-- three-doors -->
 <table align="center">
@@ -17,99 +11,106 @@
   </tr>
 </table>
 
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-decisionrules">Instead of DecisionRules</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
+## What this does
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
+Run deterministic operational decisions, retain the exact rule version, test proposed changes, track exception owners and prepare review documents. There is no model call inside the evaluator. Claude Code, Codex, OpenCode or Cursor is the operator's door into the records.
 
----
-
-## What is this
-
-Business Rules for Claude Code does the job you pay DecisionRules for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the DecisionRules dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays DecisionRules per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=decisionrules).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
+This is a focused alternative to DecisionRules for simple operational rules. It is not a drop-in replacement for its full platform. DecisionRules Public Cloud Premium is quoted; Lite is listed at EUR3,500 billed annually on its [pricing page](https://www.decisionrules.io/en/pricing/public-cloud/), checked 15 October 2026. See [research](docs/research.md) for the separate enterprise Marketplace offer that qualified this target.
 
 ## Quick start
-
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
 
 ```bash
 git clone https://github.com/Enterprise-DNA-OS/business-rules-for-claude-code.git
 cd business-rules-for-claude-code
 npm install
+npm test
 npm run demo
+npm run rules -- attention
+npm run rules -- simulate --rule="Order routing" --version=2 --input=fixtures/input.json
+npm run view
+npm run docs
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
-
-### Use it with your own Postgres or Supabase
-
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
+Node 20 or later. The demo creates three fictional rules, an unapproved warehouse change, nine regression examples, three exceptions and three decisions, including an unmatched route and an expired retention review. Seed is idempotent. Do not seed a production database. Without DATABASE_URL, PGlite runs locally under .data/db. For PostgreSQL 15 or later, set DATABASE_URL and run npm run migrate against your own empty database. No extensions required.
 
 ## The commands
 
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
+One CLI: `npm run rules -- <command>`. Read `help` for arguments. Reads produce aligned human tables; `--json` returns structured data. Names match without case and IDs accept prefixes. Ambiguous matches list candidates and exit 1.
 
-| Command | What it does |
-|---|---|
-| `/...` | ... |
+- `/rules`: List rules, owners, versions and exceptions.
+- `/rule`: Read one rule and its full history.
+- `/reviews-due`: Check the next fortnight of policy reviews.
+- `/test-coverage`: Inspect regression coverage and last test status.
+- `/exceptions`: Review unmapped cases and overdue decisions.
+- `/decisions`: Compare matched and unmatched decisions by version.
+- `/activity`: Read the audit history.
+- `/attention`: Start the day with reviews, exceptions and record checks.
+- `/compliance`: Check privacy review evidence and house controls.
+- `/weekly-review`: Write the Monday rule review.
+- `/simulate`: Try an input against an exact version without saving.
+- `/evaluate`: Record an operational decision with its matching rows.
+- `/test-rule`: Run all regression examples for one version.
+- `/add-rule`: Add a rule as an unapproved draft.
+- `/revise-rule`: Create an immutable new rule version.
+- `/add-case`: Add a synthetic regression example.
+- `/approve-rule`: Test and activate a reviewed draft version.
+- `/log-exception`: Log an operational case needing a person.
+- `/resolve-exception`: Close an exception with the recorded resolution.
+- `/review-rule`: Record a completed review and next review date.
+- `/import`: Import a supported DecisionRules export as a draft.
+- `/export`: Export the complete database including raw vendor exports.
+- `/draft-review`: Draft an internal rule review without sending.
+- `/customise`: add a field or house control with a migration and tests.
+- `/new-view`: create another read-only report in your brand.
 
-## Instead of decisionrules
+Writes require --actor and accept --dry-run. Approved version content cannot change. A new version must pass at least two saved regression cases and be approved by a different named reviewer. Failed test-rule returns exit 1 with its results. Labels attribute changes but do not authenticate people. Read [access controls](docs/compliance.md) before shared deployment.
 
-<!-- TODO(author): how to bring data across from DecisionRules; link docs/replace-decisionrules.md -->
+## Questions your own rule system answers
 
-## Architecture
+These are demonstrated questions about this build's own records. We do not claim the vendor cannot reproduce them with its own customisation.
 
-```
-business-rules-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
-```
+1. Which rule owners have a review overdue and unresolved exceptions? (`/reviews-due`)
+2. Which rule versions have no recorded passing test run? (`/test-coverage`)
+3. Which orders were left without a matching route? (`/decisions`)
+4. Which proposed change sends our New Zealand orders to a different depot? (`/simulate`)
+5. Which version made a recorded decision, and which rows matched? (`/export`)
+6. Which urgent service records have passed their retention review date? (`/compliance`)
+7. Which case owners have missed an exception due date? (`/exceptions`)
+8. What did the previous reviewer approve before a version became active? (`/rule`)
+9. Which rule has more than one version waiting for review? (`/rule`)
+10. What changed, who recorded it, and what needs attention on Monday? (`/activity`)
 
-## Built for coding agents
+## Your first hour: ten things to ask for
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+1. Put our business name and logo in brand.json.
+2. Show the rules whose reviews are overdue.
+3. Show who owns the unmapped orders.
+4. Compare the proposed dispatch version with the active one.
+5. Add a synthetic test for a Pacific islands order.
+6. Draft a review of the warehouse change.
+7. Import this supported DecisionRules export as a draft.
+8. Add our service escalation fields with a migration.
+9. Create a read-only view grouped by rule owner.
+10. Export all our records before we change anything.
 
-## Contributing
+## Documents and views
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+`npm run docs` produces a rule card, change review pack and exception review sheet for every rule. `npm run view` produces the review desk, decision outcomes and coverage views. Set business_name, logo_path and colours in brand.json. HTML files are read-only snapshots, printable to PDF. Keep generated material private when it contains real records.
+
+## Instead of DecisionRules
+
+[Switching guide](docs/replace-decisionrules.md): export one decision table as JSON, import the supported literal-text subset in one command, compare examples, then approve. Unsupported syntax is rejected as a whole. The full original export stays attached. Scripts, flows, external connections and historical logs need a separate mapping. [Why no front end](docs/why-no-front-end.md) explains the local operating model.
+
+## Verification
+
+`npm test` uses a temporary database and output directory. It checks migrations and seed repeatability, every CLI command, real rule outcomes, failed approval, rollback, ambiguous matching, unsupported imports, escaping, document output and export completeness. GitHub Actions runs Node 20 and 22 on Windows and Ubuntu. Actual execution results are reported separately from configured CI.
 
 ## Want it installed and run for you?
 
-Enterprise DNA installs Business Rules for Claude Code for your business, migrates your DecisionRules data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+**Omni by Enterprise DNA** builds your version, migrates your rules, connects your systems and runs it. One setup fee, then a monthly retainer. Your fields, review process and web front end can be included in the scope.
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=decisionrules)
-- Read more: [enterprisedna.co/omni/instead-of/decisionrules](https://enterprisedna.co/omni/instead-of/decisionrules?utm_source=github&utm_medium=readme&utm_campaign=decisionrules)
+[Book a 30-minute call with Sam](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=decisionrules).
 
-## License
+## Licence
 
-MIT. Copyright (c) 2026 Enterprise DNA.
+MIT. Copyright 2026 Enterprise DNA.

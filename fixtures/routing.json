@@ -1,0 +1,32 @@
+{
+  "inputs": {
+    "region": "string"
+  },
+  "strategy": "first",
+  "rows": [
+    {
+      "conditions": [
+        {
+          "field": "region",
+          "op": "eq",
+          "value": "NZ"
+        }
+      ],
+      "output": {
+        "queue": "Auckland dispatch"
+      }
+    },
+    {
+      "conditions": [
+        {
+          "field": "region",
+          "op": "eq",
+          "value": "AU"
+        }
+      ],
+      "output": {
+        "queue": "Sydney dispatch"
+      }
+    }
+  ]
+}

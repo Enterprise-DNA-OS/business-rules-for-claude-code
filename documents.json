@@ -1,11 +1,54 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "rule-card",
+    "title": "Operational rule card",
+    "for_each": "select id,name from rules order by name",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Owner and purpose",
+        "sql": "select name,owner,purpose,review_due from rules where id=$1"
+      },
+      {
+        "title": "Approved decision definition",
+        "sql": "select v.version,v.definition,v.approver,v.approved_at from rule_versions v join rules r on r.active_version_id=v.id where r.id=$1"
+      },
+      {
+        "title": "Regression examples",
+        "sql": "select name,input,expected from test_cases where rule_id=$1 order by name"
+      }
+    ]
+  },
+  {
+    "name": "change-review",
+    "title": "Rule change review pack",
+    "for_each": "select id,name from rules order by name",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Version history",
+        "sql": "select version,status,author,rationale,approver,approved_at from rule_versions where rule_id=$1 order by version"
+      },
+      {
+        "title": "Test evidence",
+        "sql": "select v.version,t.passed,t.actor,t.created_at,t.results from test_runs t join rule_versions v on v.id=t.version_id where v.rule_id=$1 order by t.created_at desc"
+      },
+      {
+        "title": "Unresolved exceptions",
+        "sql": "select summary,owner,due from exceptions where rule_id=$1 and resolved_at is null order by due"
+      }
+    ]
+  },
+  {
+    "name": "exception-review",
+    "title": "Exception review sheet",
+    "for_each": "select id,name from rules order by name",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Open and closed exceptions",
+        "sql": "select summary,owner,due,resolution,resolved_at from exceptions where rule_id=$1 order by due"
+      }
     ]
   }
 ]

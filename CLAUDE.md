@@ -1,43 +1,45 @@
-# Business Rules for Claude Code: operating instructions
+# Business Rules for Claude Code
 
-This file is the brain. Claude Code reads it at the start of every session. It says who this is for, how work gets done, and the one right way to do each recurring job.
-
-## Who this is for
-
-- **Business:** [YOUR BUSINESS]
-- **Operator:** [YOUR NAME], [your role]
-- **What matters most:** [the one or two outcomes you care about]
-
-Fill this in once. A worker with context knows. A worker without it guesses.
+Read README.md and docs/compliance.md before operating. This is an operational rules database for an owner-led business. The demo is fictional. Ask for the business name, operator identity and rules when setting it up for real use.
 
 ## How to work
 
-1. **Take a brief, not a script.** The operator describes the outcome. You run the right command and present the answer.
-2. **Read before you write.** Before drafting anything about a record, read its full history first.
-3. **Plain language.** Short sentences. No filler. Numbers in tables.
-4. **Silent success, loud problems.** No play-by-play. Say what broke and what you did about it.
-5. **Stop at the line.** Anything that sends, deletes, or faces a customer waits for a yes in this session.
+Read before writing. Every record answer starts with the CLI. Use npm run rules -- help for syntax. Match names or id prefixes; if ambiguous, list candidates. Every mutation requires the actual operator name and supports --dry-run. Never invent a rule, record, test result or approval.
 
-## Routing table: one right way for each recurring job
+## Routing
 
-| When the operator asks for... | Use this |
-|---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
+- List rules, owners, versions and exceptions: `/rules`.
+- Read one rule and its full history: `/rule`.
+- Check the next fortnight of policy reviews: `/reviews-due`.
+- Inspect regression coverage and last test status: `/test-coverage`.
+- Review unmapped cases and overdue decisions: `/exceptions`.
+- Compare matched and unmatched decisions by version: `/decisions`.
+- Read the audit history: `/activity`.
+- Start the day with reviews, exceptions and record checks: `/attention`.
+- Check privacy review evidence and house controls: `/compliance`.
+- Write the Monday rule review: `/weekly-review`.
+- Try an input against an exact version without saving: `/simulate`.
+- Record an operational decision with its matching rows: `/evaluate`.
+- Run all regression examples for one version: `/test-rule`.
+- Add a rule as an unapproved draft: `/add-rule`.
+- Create an immutable new rule version: `/revise-rule`.
+- Add a synthetic regression example: `/add-case`.
+- Test and activate a reviewed draft version: `/approve-rule`.
+- Log an operational case needing a person: `/log-exception`.
+- Close an exception with the recorded resolution: `/resolve-exception`.
+- Record a completed review and next review date: `/review-rule`.
+- Import a supported DecisionRules export as a draft: `/import`.
+- Export the complete database including raw vendor exports: `/export`.
+- Draft an internal rule review without sending: `/draft-review`.
+- Change a field or rule: `/customise`.
+- Add a read-only dashboard: `/new-view`.
 
-If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
+## Limits
 
-## Hard rules
+Never send messages. Drafts stay in drafts. Never delete business records without a specific operator instruction. Activation through approve-rule needs an explicit request for the exact version and a real reviewer other than the author. Never impersonate a reviewer to pass that check. Do not use this system for lending, medical, payroll, payments or insurance underwriting decisions. Do not execute code from imported files. Unsupported vendor syntax is a stop for mapping, not permission to weaken a rule.
 
-- Never send email or messages from here. Draft to `drafts/`, a person sends.
-- Never delete records without an explicit yes in this session. Prefer marking closed or archived.
-- Never invent a record. If a name is ambiguous, list the candidates and ask.
-- The database is the source of truth. If the answer is not in it, say so.
+## Files
 
-## Where things live
+scripts/rules.mjs is the one CLI. scripts/lib/engine.mjs is the deterministic evaluator and strict importer. supabase/migrations holds plain PostgreSQL migrations; npm run migrate applies them. supabase/seed.sql is demo-only data. views.json and documents.json declare read-only output. brand.json sets the document brand. DATABASE_URL selects a server-side PostgreSQL connection; otherwise the template uses embedded PGlite.
 
-- `scripts/` the CLI. `scripts/lib/db.mjs` picks `DATABASE_URL` (Postgres, Supabase) or the embedded database in `.data/`.
-- `supabase/migrations/` the schema, plain SQL. `npm run migrate` applies it.
-- `.claude/commands/` the slash commands. Add one every time the same ask comes twice.
-- `docs/` the thesis and the guide for moving off DecisionRules.
-
-Built by Enterprise DNA. Installed and run for you as part of Omni: https://enterprisedna.co/omni/instead-of/decisionrules
+Built and operated for you through Omni by Enterprise DNA: https://enterprisedna.co/omni/book/?offer=replace-software&utm_campaign=decisionrules

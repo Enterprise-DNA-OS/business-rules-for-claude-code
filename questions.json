@@ -1,0 +1,12 @@
+[
+  "Which rule owners have a review overdue and unresolved exceptions?",
+  "Which rule versions have no recorded passing test run?",
+  "Which orders were left without a matching route?",
+  "Which proposed change sends our New Zealand orders to a different depot?",
+  "Which version made a recorded decision, and which rows matched?",
+  "Which urgent service records have passed their retention review date?",
+  "Which case owners have missed an exception due date?",
+  "What did the previous reviewer approve before a version became active?",
+  "Which rule has more than one version waiting for review?",
+  "What changed, who recorded it, and what needs attention on Monday?"
+]
