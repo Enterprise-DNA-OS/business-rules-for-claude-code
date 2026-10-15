@@ -63,7 +63,7 @@ One CLI: `npm run rules -- <command>`. Read `help` for arguments. Reads produce 
 - `/customise`: add a field or house control with a migration and tests.
 - `/new-view`: create another read-only report in your brand.
 
-Writes require --actor and accept --dry-run. Approved version content cannot change. A new version must pass at least two saved regression cases and be approved by a different named reviewer. Failed test-rule returns exit 1 with its results. Labels attribute changes but do not authenticate people. Read [access controls](docs/compliance.md) before shared deployment.
+Database changes require --actor and accept --dry-run. Exports and drafts write new local files. Approved version content cannot change. A new version must pass at least two saved regression cases and be approved by a different named reviewer. Failed test-rule returns exit 1 with its results. Labels attribute changes but do not authenticate people. Read [access controls](docs/compliance.md) before shared deployment.
 
 ## Questions your own rule system answers
 
